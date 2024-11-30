@@ -1,0 +1,171 @@
+﻿﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site1.master.cs" Inherits="TiendaGrupo15Progra3.Site1" %>
+<!DOCTYPE html>
+<html lang="es">
+<head runat="server">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transforma Tienda</title>
+    <asp:ContentPlaceHolder ID="head" runat="server"></asp:ContentPlaceHolder>
+
+    <!-- Enlaces a Bootstrap y FontAwesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+    <style>
+        /* Estilos personalizados */
+        .navbar-custom {
+            background-color: #1a1a1a; /* Fondo oscuro */
+            border-bottom: 2px solid #ffd700; /* Línea dorada */
+        }
+
+        .navbar-custom .navbar-brand,
+        .navbar-custom .nav-link {
+            color: white !important;
+        }
+
+        .navbar-custom .nav-link:hover {
+            color: #ffd700 !important;
+        }
+
+        .navbar-custom .navbar-toggler-icon {
+            background-color: #ffd700;
+        }
+
+        .navbar-custom .cart-icon {
+            color: #ffd700;
+        }
+
+        .cart-badge {
+            background-color: #ffd700;
+            color: black;
+            font-weight: bold;
+            padding: 0 8px;
+            border-radius: 50%;
+            font-size: 14px;
+        }
+
+        .navbar-custom .search-bar {
+            width: 300px;
+            border-radius: 25px;
+            border: none;
+            padding: 10px;
+            margin-left: 20px;
+        }
+        .footer-Position{
+            position:fixed;
+            bottom:0;
+            width: 100%; 
+            background-color: #1a1a1a; 
+            color: white;  
+            padding: 10px; 
+            height: 40px; /* Altura del footer */
+        }
+    </style>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <!-- Encabezado -->
+        <header>
+            <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">Transforma Tienda</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="/Default.aspx">Inicio</a>
+                            </li>
+                            <%if (Session["Usuario"] != null)
+                                {
+                                    Dominio.Usuario usuario = (Dominio.Usuario)Session["Usuario"];
+                                    int Rol = int.Parse(usuario.rol.ToString());
+                                    if (Rol == 1)
+                                    {
+                             %>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/ListaDeUsuarios.aspx">Usuarios</a>
+                               </li>
+
+                            <%
+                             }
+                             } %>
+                           
+                            <li class="nav-item">
+                                <a class="nav-link" href="/ElegirProducto.aspx">Market Place</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Comprados.aspx">Comprados</a>
+                              </li>
+                          <li class="nav-item">
+                             <a class="nav-link" href="/EnCamino.aspx">En Camino</a>
+                             </li>
+                          
+                             <li class="nav-item">
+                                <a class="nav-link" href="/VenderProductos.aspx">Vender</a>
+                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Vendidos.aspx">Vendidos</a>
+                               </li>
+                             <li class="nav-item">
+                                <a class="nav-link" href="/IngresaTusDatos.aspx">Mi perfil</a>
+                              </li>
+                            <li class="nav-item dropdown">
+                                <% if (Session["Usuario"] == null) { %>
+                                    <!-- Si no hay usuario logueado, mostrar las opciones Login y Registrarse -->
+                                    <a class="nav-link dropdown-toggle" href="#" id="loginDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Login
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="loginDropdown">
+                                        <li><a class="dropdown-item" href="/Login.aspx">Login</a></li>
+                                        <li><a class="dropdown-item" href="/RegistrarseLogin.aspx">Registrarse</a></li>
+                                    </ul>
+                                <% } else { %>
+                                    <!-- Si el usuario está logueado, mostrar la opción de Cerrar sesión -->
+                                    <a class="nav-link dropdown-toggle" href="#" id="logoutDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Cuenta
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="logoutDropdown">
+                   
+                                        <li>
+                                            <asp:LinkButton runat="server" CssClass="dropdown-item" ID="btnCerrarSesion" OnClick="btnCerrarSesion_Click">Cerrar sesión</asp:LinkButton>
+                                            <h4><asp:Label ID="lblCerrarSesion" runat="server" CssClass="message"></asp:Label></h4>
+                                        </li>
+                                    </ul>
+                                <% } %>
+                              </li>
+                            <li class="nav-item">
+                                <a class="nav-link cart-icon" href="/CarritoWebForm.aspx">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span class="cart-badge">
+                                        <%=cantidadCarrito%>
+                                    </span> <!-- Este número puede cambiar dinámicamente -->
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+        </header>
+
+        <!-- Contenido Principal -->
+        <main>
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server"></asp:ContentPlaceHolder>
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder2" runat="server"></asp:ContentPlaceHolder>
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder3" runat="server"></asp:ContentPlaceHolder>
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder4" runat="server"></asp:ContentPlaceHolder>
+        </main>
+
+        <!-- Pie de Página -->
+        <div>
+        <footer class="text-center footer-Position">
+            <p>&copy; 2024 Transforma Tienda. Todos los derechos reservados.</p>
+        </footer>
+        </div>
+    </form>
+
+    <!-- Scripts de Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
